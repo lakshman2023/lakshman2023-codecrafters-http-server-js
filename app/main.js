@@ -11,7 +11,7 @@ const server = net.createServer((socket) => {
         const res = "HTTP/1.1 200 OK\r\n\r\n";
         socket.write(res);
     } else if(req.startsWith("GET /echo/")){
-        const randomString = path.split('echo/')[1];
+        const randomString = req.split('echo/')[1];
         const response = createResponse({
           status: '200 OK',
           headers: {
