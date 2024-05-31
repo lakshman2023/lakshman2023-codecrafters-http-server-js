@@ -7,7 +7,7 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((socket) => {
   socket.on('data', (data) => {
     const req = data.toString();
-    if(data.startsWith("GET / ")){
+    if(req.startsWith("GET / ")){
         const res = "HTTP/1.1 200 OK\r\n\r\n";
         socket.write(res);
     } else {
