@@ -19,7 +19,7 @@ const server = net.createServer((socket) => {
             const content = reqPath.split("echo/")[1];
             const encodingHeader = reqLines.find(e => e.includes('Accept-Encoding'))?.split(': ')[1];
             let res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
-            if(!encodingHeader.includes("gzip")){
+            if(!encodingHeader?.includes("gzip")){
                 socket.write(res);
             } else {
                 res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: gzip\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
