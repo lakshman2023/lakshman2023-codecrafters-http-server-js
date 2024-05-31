@@ -17,12 +17,17 @@ const server = net.createServer((socket) => {
             const res = "HTTP/1.1 200 OK\r\n\r\n";
             socket.write(res);
         } else if(reqPath.startsWith('/echo/')){
-            const content = reqPath.split("echo/")[1];
-            const encodingHeader = req.split('Accept-Encoding: ')[1];
-            const isGzip = encodingHeader && encodingHeader.includes("gzip");
-            const encodedContent = isGzip ? zlib.gzipSync(content) : content;
-            let res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n${isGzip ? "Content-Encoding: gzip\r\n" : ""}Content-Length: ${encodedContent.length}\r\n\r\n${encodedContent}`;
-            socket.write(res);
+            const echoString = reqPath.split('echo/')[1];
+            const acceptEncoding = req.split("Accept-Encoding: ")[1];
+            const isGzip = acceptEncoding && acceptEncoding.includes("gzip");
+            // Compress the response using zlib.gzipSync() if gzip is present in Accept-Encoding header
+            const compressedOrUncompressedEchoString = isGzip
+                ? zlib.gzipSync(echoString)
+                : echoString;
+            const response = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${compressedOrUncompressedEchoString.length}\r\n${isGzip ? "Content-Encoding: gzip\r\n" : ""}\r\n`;
+            socket.write(response); // Write the response header
+            socket.write(compressedOrUncompressedEchoString); // Write the compressed or uncompressed response
+            socket.end();
         }else if(reqPath.startsWith('/user-agent')) {
             const userAgent = reqLines.find(e => e.includes('User-Agent')).split(': ')[1];
             const res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`;
