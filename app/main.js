@@ -23,6 +23,7 @@ const server = net.createServer((socket) => {
                 socket.write(res);
             } else {
                 res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: ${encodingHeader}\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
+                socket.write(res);
             }
             socket.write(res);
         }else if(reqPath.startsWith('/user-agent')) {
