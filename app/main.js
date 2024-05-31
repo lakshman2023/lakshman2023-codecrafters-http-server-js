@@ -24,7 +24,7 @@ const server = net.createServer((socket) => {
             if(!encodingHeader?.includes("gzip")){
                 socket.write(res);
             } else {
-                res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: gzip\r\nContent-Length: ${encodedContent.length}\r\n\r\n${encodedContent}`;
+                res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: ${encodingHeader}\r\nContent-Length: ${encodedContent.length}\r\n\r\n${encodedContent}`;
                 socket.write(res);
             }
             socket.write(res);
