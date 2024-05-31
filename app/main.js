@@ -7,11 +7,12 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((socket) => {
   socket.on('data', (data) => {
     const req = data.toString();
-    if(req.startsWith("GET / ")){
+    const reqPath = req.split(' ')[1];
+    if(reqPath === '/'){
         const res = "HTTP/1.1 200 OK\r\n\r\n";
         socket.write(res);
-    } else if(req.startsWith("GET /echo/")){
-        const content = req.split("echo/")[1];
+    } else if(reqPath.startsWith('/echo/')){
+        const content = reqPath.split("echo/")[1];
         const res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
         socket.write(res);
     }else {
