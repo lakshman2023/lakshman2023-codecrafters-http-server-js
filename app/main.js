@@ -17,7 +17,13 @@ const server = net.createServer((socket) => {
             socket.write(res);
         } else if(reqPath.startsWith('/echo/')){
             const content = reqPath.split("echo/")[1];
-            const res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
+            const encodingHeader = reqLines.find(e => e.includes('Accept-Encoding')).split(': ')[1];
+            let res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
+            if(encodingHeader === "invalid-encoding"){
+                socket.write(res);
+            } else {
+                res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: ${encodingHeader}\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
+            }
             socket.write(res);
         }else if(reqPath.startsWith('/user-agent')) {
             const userAgent = reqLines.find(e => e.includes('User-Agent')).split(': ')[1];
